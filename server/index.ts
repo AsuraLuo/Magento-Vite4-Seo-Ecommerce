@@ -1,5 +1,5 @@
 import express from "express";
-// import compression from "compression";
+import compression from "compression";
 import { renderPage } from "vite-plugin-ssr";
 
 import { root } from "./root.js";
@@ -9,11 +9,11 @@ const isProduction = process.env.NODE_ENV === "production";
 async function startServer() {
   const app = express();
 
-  // app.use(compression());
+  app.use(compression());
 
   if (isProduction) {
-    // const sirv = (await import("sirv")).default;
-    // app.use(sirv(`${root}/dist/client`));
+    const sirv = (await import("sirv")).default;
+    app.use(sirv(`${root}/dist/client`));
   } else {
     const vite = await import("vite");
     const viteDevMiddleware = (

@@ -4,10 +4,6 @@ import { escapeInject, dangerouslySkipEscape } from "vite-plugin-ssr";
 import { PageShell } from "./PageShell";
 import type { PageContextServer } from "../types/page.type";
 
-export { render };
-// See https://vite-plugin-ssr.com/data-fetching
-export const passToClient = ["pageProps", "urlPathname"];
-
 async function render(pageContext: PageContextServer) {
   const { Page, pageProps } = pageContext;
   const pageHtml = renderToString(
@@ -42,3 +38,7 @@ async function render(pageContext: PageContextServer) {
     },
   };
 }
+
+export { render };
+// See https://vite-plugin-ssr.com/data-fetching
+export const passToClient = ["pageProps"];

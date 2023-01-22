@@ -1,11 +1,12 @@
 import { ReactNode } from "react";
+
 import { usePageContext } from "./usePageContext";
 
-function Link(props: {
+const Link = (props: {
   href?: string;
   className?: string;
   children: ReactNode;
-}) {
+}) => {
   const pageContext = usePageContext();
   const className = [
     props.className,
@@ -14,6 +15,6 @@ function Link(props: {
     .filter(Boolean)
     .join(" ");
   return <a {...props} className={className} />;
-}
+};
 
 export { Link };

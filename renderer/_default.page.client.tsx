@@ -3,8 +3,6 @@ import { hydrateRoot } from "react-dom/client";
 import { PageShell } from "./PageShell";
 import type { PageContextClient } from "../types/page.type";
 
-export { render };
-
 async function render(pageContext: PageContextClient) {
   const { Page, pageProps } = pageContext;
   hydrateRoot(
@@ -17,3 +15,4 @@ async function render(pageContext: PageContextClient) {
 
 // To enable Client-side Routing:
 export const clientRouting = true;
+export { render };
