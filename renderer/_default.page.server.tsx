@@ -1,11 +1,17 @@
 import { renderToString } from "react-dom/server";
+import { Provider } from "react-redux";
 import { escapeInject, dangerouslySkipEscape } from "vite-plugin-ssr";
 
+import { createStore } from "../store/create";
 import { PageShell } from "./PageShell";
 import type { PageContextServer } from "../types/page.type";
 
-async function render(pageContext: PageContextServer) {
+// See https://vite-plugin-ssr.com/data-fetching
+const passToClient = ["PRELOADED_STATE", "pageProps"];
+
+const render = async (pageContext: PageContextServer) => {
   const { Page, pageProps } = pageContext;
+
   const pageHtml = renderToString(
     <PageShell pageContext={pageContext}>
       <Page {...pageProps} />
@@ -37,8 +43,27 @@ async function render(pageContext: PageContextServer) {
       // We can add some `pageContext` here, which is useful if we want to do page redirection https://vite-plugin-ssr.com/page-redirection
     },
   };
-}
+};
 
-export { render };
-// See https://vite-plugin-ssr.com/data-fetching
-export const passToClient = ["pageProps"];
+const onBeforeRender = async (pageContext: PageContextServer) => {
+  const store = createStore();
+
+  const { Page } = pageContext;
+  const pageHtml = renderToString(
+    <Provider store={store}>
+      <Page />
+    </Provider>
+  );
+
+  // Grab the initial state from our Redux store
+  const PRELOADED_STATE = store.getState();
+
+  return {
+    pageContext: {
+      PRELOADED_STATE,
+      pageHtml,
+    },
+  };
+};
+
+export { passToClient, render, onBeforeRender };
