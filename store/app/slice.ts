@@ -5,6 +5,7 @@ import { fetchStoreConfig } from "./actions";
 export const slice: Slice = createSlice({
   name: "app",
   initialState: {
+    currency: null,
     storeConfig: null,
   },
   reducers: {
@@ -15,7 +16,9 @@ export const slice: Slice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchStoreConfig.fulfilled, (state: any, { payload }) => {
-        state.storeConfig = payload;
+        const { currency, storeConfig } = payload;
+        state.currency = currency;
+        state.storeConfig = storeConfig;
       })
       .addCase(fetchStoreConfig.rejected, (state: any) => {
         state.storeConfig = null;

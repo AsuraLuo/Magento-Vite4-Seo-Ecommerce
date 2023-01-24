@@ -3,10 +3,11 @@ import { Provider } from "react-redux";
 import { escapeInject, dangerouslySkipEscape } from "vite-plugin-ssr";
 import { getDataFromTree } from "@apollo/client/react/ssr";
 
-import { createStore } from "@store/create";
-import PageShell from "@components/PageShell";
+import { GET_STORE_CONFIG } from "@graphql/queries/getStoreConfig";
 import { PageContextServer } from "../types/pageType";
+import { createStore } from "@store/create";
 import { asyncActions as appAsyncActions } from "@store/app";
+import PageShell from "@components/PageShell";
 
 // See https://vite-plugin-ssr.com/data-fetching
 const passToClient = [
@@ -27,7 +28,6 @@ const render = async (pageContext: PageContextServer) => {
   );
   const pageHtml = await getDataFromTree(tree);
   const apolloIntialState = apolloClient.extract();
-  // const pageHtml = renderToString();
 
   const { documentProps } = pageContext.exports;
   const title = (documentProps && documentProps.title) || "Vite SSR app";
@@ -58,11 +58,16 @@ const render = async (pageContext: PageContextServer) => {
 };
 
 const onBeforeRender = async (pageContext: PageContextServer) => {
-  const { Page } = pageContext;
+  const { Page, apolloClient } = pageContext;
 
   const store: any = createStore();
   const { dispatch } = store;
-  await dispatch(appAsyncActions.fetchStoreConfig());
+  await dispatch(
+    appAsyncActions.fetchStoreConfig({
+      apolloClient,
+      query: GET_STORE_CONFIG,
+    })
+  );
 
   const pageHtml = renderToString(
     <Provider store={store}>
