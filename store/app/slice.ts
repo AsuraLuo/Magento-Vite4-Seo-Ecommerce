@@ -15,10 +15,10 @@ export const slice: Slice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchStoreConfig.fulfilled, (state: any, { payload }) => {
-        state.setAppConfig = payload;
+        state.storeConfig = payload;
       })
       .addCase(fetchStoreConfig.rejected, (state: any) => {
-        state.setAppConfig = null;
+        state.storeConfig = null;
       });
   },
 });

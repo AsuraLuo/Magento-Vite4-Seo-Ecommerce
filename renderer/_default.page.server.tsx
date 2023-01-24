@@ -5,6 +5,7 @@ import { escapeInject, dangerouslySkipEscape } from "vite-plugin-ssr";
 import { createStore } from "@store/create";
 import PageShell from "@components/PageShell";
 import { PageContextServer } from "@types/pageType";
+import { asyncActions as appAsyncActions } from "@store/app";
 
 // See https://vite-plugin-ssr.com/data-fetching
 const passToClient = ["PRELOADED_STATE", "documentProps", "pageProps"];
@@ -46,9 +47,12 @@ const render = async (pageContext: PageContextServer) => {
 };
 
 const onBeforeRender = async (pageContext: PageContextServer) => {
-  const store = createStore();
-
   const { Page } = pageContext;
+
+  const store: any = createStore();
+  const { dispatch } = store;
+  await dispatch(appAsyncActions.fetchStoreConfig());
+
   const pageHtml = renderToString(
     <Provider store={store}>
       <Page />
