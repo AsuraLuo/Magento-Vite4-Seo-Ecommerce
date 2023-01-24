@@ -2,12 +2,12 @@ import { renderToString } from "react-dom/server";
 import { Provider } from "react-redux";
 import { escapeInject, dangerouslySkipEscape } from "vite-plugin-ssr";
 
-import { createStore } from "../store/create";
-import { PageShell } from "./PageShell";
-import type { PageContextServer } from "../types/page.type";
+import { createStore } from "@store/create";
+import PageShell from "@components/PageShell";
+import { PageContextServer } from "@types/pageType";
 
 // See https://vite-plugin-ssr.com/data-fetching
-const passToClient = ["PRELOADED_STATE", "pageProps"];
+const passToClient = ["PRELOADED_STATE", "documentProps", "pageProps"];
 
 const render = async (pageContext: PageContextServer) => {
   const { Page, pageProps } = pageContext;

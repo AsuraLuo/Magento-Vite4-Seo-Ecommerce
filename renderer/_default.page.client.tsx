@@ -1,9 +1,9 @@
 import { createRoot, hydrateRoot, Root } from "react-dom/client";
 import { Provider } from "react-redux";
 
-import { createStore } from "../store/create";
-import { PageShell } from "./PageShell";
-import type { PageContextClient } from "../types/page.type";
+import { createStore } from "@store/create";
+import PageShell from "@components/PageShell";
+import type { PageContextClient } from "../types/pageType";
 
 // To enable Client-side Routing:
 const clientRouting = true;
