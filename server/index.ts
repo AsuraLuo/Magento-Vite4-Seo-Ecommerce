@@ -1,19 +1,36 @@
 import express from "express";
 import compression from "compression";
+import fetch from "node-fetch";
+import Apollo from "@apollo/client";
+import { dirname } from "path";
+import { fileURLToPath } from "url";
 import { renderPage } from "vite-plugin-ssr";
 
-import { root } from "./root.js";
+const { ApolloClient, InMemoryCache, createHttpLink } = Apollo;
+const __dirname: string = dirname(fileURLToPath(import.meta.url));
+const root: string = `${__dirname}/..`;
+const nodeFetch: any = fetch;
+const isProduction: boolean = process.env.NODE_ENV === "production";
 
-const isProduction = process.env.NODE_ENV === "production";
+const createApolloClient = () => {
+  const apolloClient = new ApolloClient({
+    ssrMode: true,
+    link: createHttpLink({
+      uri: "http://82.157.172.168/graphql",
+      fetch: nodeFetch,
+    }),
+    cache: new InMemoryCache(),
+  });
+  return apolloClient;
+};
 
-async function startServer() {
+const startServer = async () => {
   const app = express();
 
   app.use(compression());
 
   if (isProduction) {
-    const sirv = (await import("sirv")).default;
-    app.use(sirv(`${root}/dist/client`));
+    app.use(express.static(`${root}/dist/client`));
   } else {
     const vite = await import("vite");
     const viteDevMiddleware = (
@@ -26,10 +43,17 @@ async function startServer() {
   }
 
   app.get("*", async (req, res, next) => {
+    // It's important to create an entirely new instance of Apollo Client for each request.
+    // Otherwise, our response to a request might include sensitive cached query results
+    // from a previous request. Source: https://www.apollographql.com/docs/react/performance/server-side-rendering/#example
+    const apolloClient = createApolloClient();
+
     const pageContextInit = {
       urlOriginal: req.originalUrl,
+      apolloClient,
     };
     const pageContext = await renderPage(pageContextInit);
+
     const { httpResponse } = pageContext;
     if (!httpResponse) return next();
     const { body, statusCode, contentType, earlyHints } = httpResponse;
@@ -40,7 +64,7 @@ async function startServer() {
 
   const port = process.env.PORT || 3000;
   app.listen(port);
-  console.log(`Server running at http://localhost:${port}`);
-}
+  if (!isProduction) console.log(`Server running at http://localhost:${port}`);
+};
 
 startServer();

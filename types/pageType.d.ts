@@ -13,6 +13,8 @@ type PageProps = {};
 export type PageContextCustom = {
   Page: Page;
   PRELOADED_STATE: any;
+  apolloClient: any;
+  apolloIntialState: any;
   pageProps?: PageProps;
   urlPathname: string;
   exports: {

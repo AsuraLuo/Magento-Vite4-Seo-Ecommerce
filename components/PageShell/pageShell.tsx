@@ -1,4 +1,5 @@
 import { ReactNode, StrictMode } from "react";
+import { ApolloProvider } from "@apollo/client";
 
 import { PageContextProvider } from "../../renderer/usePageContext";
 import { PageContext } from "@types/pageType";
@@ -6,23 +7,27 @@ import Link from "@components/Link";
 
 const PageShell = ({
   children,
+  apolloClient,
   pageContext,
 }: {
   children: ReactNode;
+  apolloClient: any;
   pageContext: PageContext;
 }) => {
   return (
     <StrictMode>
-      <PageContextProvider pageContext={pageContext}>
-        <Link className="navitem" href="/">
-          Home
-        </Link>
-        <br />
-        <Link className="navitem" href="/about">
-          About
-        </Link>
-        {children}
-      </PageContextProvider>
+      <ApolloProvider client={apolloClient}>
+        <PageContextProvider pageContext={pageContext}>
+          <Link className="navitem" href="/">
+            Home
+          </Link>
+          <br />
+          <Link className="navitem" href="/about">
+            About
+          </Link>
+          {children}
+        </PageContextProvider>
+      </ApolloProvider>
     </StrictMode>
   );
 };

@@ -1,6 +1,6 @@
 import { documentToHtmlString } from "@contentful/rich-text-html-renderer";
 
-import { useApp } from "./hooks/App";
+import { useApp } from "@hooks/App";
 
 const App = () => {
   const { content } = useApp();

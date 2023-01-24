@@ -1,23 +1,33 @@
 import { renderToString } from "react-dom/server";
 import { Provider } from "react-redux";
 import { escapeInject, dangerouslySkipEscape } from "vite-plugin-ssr";
+import { getDataFromTree } from "@apollo/client/react/ssr";
 
 import { createStore } from "@store/create";
 import PageShell from "@components/PageShell";
-import { PageContextServer } from "@types/pageType";
+import { PageContextServer } from "../types/pageType";
 import { asyncActions as appAsyncActions } from "@store/app";
 
 // See https://vite-plugin-ssr.com/data-fetching
-const passToClient = ["PRELOADED_STATE", "documentProps", "pageProps"];
+const passToClient = [
+  "PRELOADED_STATE",
+  "apolloIntialState",
+  "documentProps",
+  "pageProps",
+];
 
 const render = async (pageContext: PageContextServer) => {
-  const { Page, pageProps } = pageContext;
+  const { Page, apolloClient, pageProps } = pageContext;
 
-  const pageHtml = renderToString(
-    <PageShell pageContext={pageContext}>
+  // See https://www.apollographql.com/docs/react/performance/server-side-rendering/
+  const tree = (
+    <PageShell apolloClient={apolloClient} pageContext={pageContext}>
       <Page {...pageProps} />
     </PageShell>
   );
+  const pageHtml = await getDataFromTree(tree);
+  const apolloIntialState = apolloClient.extract();
+  // const pageHtml = renderToString();
 
   const { documentProps } = pageContext.exports;
   const title = (documentProps && documentProps.title) || "Vite SSR app";
@@ -42,6 +52,7 @@ const render = async (pageContext: PageContextServer) => {
     documentHtml,
     pageContext: {
       // We can add some `pageContext` here, which is useful if we want to do page redirection https://vite-plugin-ssr.com/page-redirection
+      apolloIntialState,
     },
   };
 };
