@@ -3,6 +3,8 @@ import { ApolloProvider } from "@apollo/client";
 
 import { PageContextProvider } from "../../renderer/usePageContext";
 import { PageContext } from "../../types/pageType";
+
+import Footer from "@components/Footer";
 import Link from "@components/Link";
 
 const PageShell = ({
@@ -26,6 +28,7 @@ const PageShell = ({
             About
           </Link>
           {children}
+          <Footer />
         </PageContextProvider>
       </ApolloProvider>
     </StrictMode>

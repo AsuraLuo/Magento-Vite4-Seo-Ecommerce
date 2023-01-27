@@ -12,12 +12,11 @@ const Page = () => {
       identifier,
     },
   });
-  console.log(data);
 
   return (
     <div>
       <h1>Welcome SSR</h1>
-      This page is:
+      <p>{data?.cmsPage?.title ?? ""}</p>
       <ul>
         <li>Rendered to HTML.</li>
       </ul>

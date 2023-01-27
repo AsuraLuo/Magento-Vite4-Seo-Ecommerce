@@ -16,7 +16,8 @@ let root: Root;
 const createApolloClient = (apolloIntialState: any) => {
   return new ApolloClient({
     link: createHttpLink({
-      uri: "http://82.157.172.168/graphql",
+      // uri: "http://82.157.172.168/graphql",
+      uri: "http://localhost:3000/api/graphql",
     }),
     cache: new InMemoryCache().restore(apolloIntialState),
   });

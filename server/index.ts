@@ -5,6 +5,7 @@ import Apollo from "@apollo/client";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import { renderPage } from "vite-plugin-ssr";
+import { createProxyMiddleware } from "http-proxy-middleware";
 
 const { ApolloClient, InMemoryCache, createHttpLink } = Apollo;
 const __dirname: string = dirname(fileURLToPath(import.meta.url));
@@ -16,7 +17,8 @@ const createApolloClient = () => {
   const apolloClient = new ApolloClient({
     ssrMode: true,
     link: createHttpLink({
-      uri: "http://82.157.172.168/graphql",
+      // uri: "http://82.157.172.168/graphql",
+      uri: "http://localhost:3000/api/graphql",
       fetch: nodeFetch,
     }),
     cache: new InMemoryCache(),
@@ -28,6 +30,20 @@ const startServer = async () => {
   const app = express();
 
   app.use(compression());
+
+  app.use(
+    "/api/graphql",
+    createProxyMiddleware({
+      changeOrigin: true,
+      pathRewrite: {
+        "^/api/graphql": "/graphql",
+      },
+      router: async () => {
+        // return process.env.NEXT_PRIVATE_MAGENTO_URL;
+        return "http://82.157.172.168/";
+      },
+    })
+  );
 
   if (isProduction) {
     app.use(express.static(`${root}/dist/client`));
