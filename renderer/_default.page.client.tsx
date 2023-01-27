@@ -23,11 +23,11 @@ const createApolloClient = (apolloIntialState: any) => {
 };
 
 const render = async (pageContext: PageContextClient) => {
-  const { Page, apolloIntialState, pageProps } = pageContext;
+  const { Page, apolloIntialState, pageProps, PRELOADED_STATE } = pageContext;
   const apolloClient = createApolloClient(apolloIntialState);
   // We initilaize the store on every render because we use Server Routing. If we use Client Routing, then we should initialize the store only once instead.
   // (See https://vite-plugin-ssr.com/server-routing-vs-client-routing for more information about Client Routing and Server Routing.)
-  const store = createStore(pageContext.PRELOADED_STATE);
+  const store = createStore(PRELOADED_STATE);
   const page = (
     <Provider store={store}>
       <PageShell apolloClient={apolloClient} pageContext={pageContext}>

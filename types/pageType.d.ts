@@ -16,6 +16,7 @@ export type PageContextCustom = {
   apolloClient: any;
   apolloIntialState: any;
   pageProps?: PageProps;
+  pageHtml?: any;
   urlPathname: string;
   exports: {
     documentProps?: {

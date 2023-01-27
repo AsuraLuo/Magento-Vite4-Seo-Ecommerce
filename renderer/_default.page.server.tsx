@@ -1,4 +1,3 @@
-import { renderToString } from "react-dom/server";
 import { Provider } from "react-redux";
 import { escapeInject, dangerouslySkipEscape } from "vite-plugin-ssr";
 import { getDataFromTree } from "@apollo/client/react/ssr";
@@ -15,19 +14,11 @@ const passToClient = [
   "apolloIntialState",
   "documentProps",
   "pageProps",
+  "pageHtml",
 ];
 
 const render = async (pageContext: PageContextServer) => {
-  const { Page, apolloClient, pageProps } = pageContext;
-
-  // See https://www.apollographql.com/docs/react/performance/server-side-rendering/
-  const tree = (
-    <PageShell apolloClient={apolloClient} pageContext={pageContext}>
-      <Page {...pageProps} />
-    </PageShell>
-  );
-  const pageHtml = await getDataFromTree(tree);
-  const apolloIntialState = apolloClient.extract();
+  const { Page, pageHtml } = pageContext;
 
   const { documentProps } = pageContext.exports;
   const title = (documentProps && documentProps.title) || "Vite SSR app";
@@ -52,16 +43,15 @@ const render = async (pageContext: PageContextServer) => {
     documentHtml,
     pageContext: {
       // We can add some `pageContext` here, which is useful if we want to do page redirection https://vite-plugin-ssr.com/page-redirection
-      apolloIntialState,
     },
   };
 };
 
 const onBeforeRender = async (pageContext: PageContextServer) => {
   const { Page, apolloClient } = pageContext;
-
   const store: any = createStore();
   const { dispatch } = store;
+
   await dispatch(
     appAsyncActions.fetchStoreConfig({
       apolloClient,
@@ -69,11 +59,17 @@ const onBeforeRender = async (pageContext: PageContextServer) => {
     })
   );
 
-  const pageHtml = renderToString(
-    <Provider store={store}>
-      <Page />
-    </Provider>
+  // See https://www.apollographql.com/docs/react/performance/server-side-rendering/
+  const tree = (
+    <PageShell apolloClient={apolloClient} pageContext={pageContext}>
+      <Provider store={store}>
+        <Page />
+      </Provider>
+    </PageShell>
   );
+
+  const pageHtml = await getDataFromTree(tree);
+  const apolloIntialState = apolloClient.extract();
 
   // Grab the initial state from our Redux store
   const PRELOADED_STATE = store.getState();
@@ -81,6 +77,7 @@ const onBeforeRender = async (pageContext: PageContextServer) => {
   return {
     pageContext: {
       PRELOADED_STATE,
+      apolloIntialState,
       pageHtml,
     },
   };

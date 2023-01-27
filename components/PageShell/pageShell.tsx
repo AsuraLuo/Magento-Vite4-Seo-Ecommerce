@@ -2,7 +2,7 @@ import { ReactNode, StrictMode } from "react";
 import { ApolloProvider } from "@apollo/client";
 
 import { PageContextProvider } from "../../renderer/usePageContext";
-import { PageContext } from "@types/pageType";
+import { PageContext } from "../../types/pageType";
 import Link from "@components/Link";
 
 const PageShell = ({
