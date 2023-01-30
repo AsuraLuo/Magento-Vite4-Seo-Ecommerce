@@ -1,3 +1,4 @@
+import * as dotenv from "dotenv";
 import express from "express";
 import compression from "compression";
 import fetch from "node-fetch";
@@ -13,12 +14,13 @@ const root: string = `${__dirname}/..`;
 const nodeFetch: any = fetch;
 const isProduction: boolean = process.env.NODE_ENV === "production";
 
+dotenv.config();
+
 const createApolloClient = () => {
   const apolloClient = new ApolloClient({
     ssrMode: true,
     link: createHttpLink({
-      // uri: "http://82.157.172.168/graphql",
-      uri: "http://localhost:3000/api/graphql",
+      uri: `${process.env.REACT_APP_HOST_URL}api/graphql`,
       fetch: nodeFetch,
     }),
     cache: new InMemoryCache(),
@@ -39,8 +41,7 @@ const startServer = async () => {
         "^/api/graphql": "/graphql",
       },
       router: async () => {
-        // return process.env.NEXT_PRIVATE_MAGENTO_URL;
-        return "http://82.157.172.168/";
+        return process.env.REACT_APP_API_URL;
       },
     })
   );
