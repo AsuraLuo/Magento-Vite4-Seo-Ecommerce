@@ -1,4 +1,4 @@
-import { gql, DocumentNode } from "@apollo/client";
+import { gql, DocumentNode } from '@apollo/client'
 
 export const GET_CMS_PAGE: DocumentNode = gql`
   query getCmsPage($id: Int, $identifier: String) {
@@ -14,4 +14,4 @@ export const GET_CMS_PAGE: DocumentNode = gql`
       url_key
     }
   }
-`;
+`

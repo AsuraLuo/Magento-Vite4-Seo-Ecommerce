@@ -1,87 +1,87 @@
-import * as dotenv from "dotenv";
-import express from "express";
-import compression from "compression";
-import fetch from "node-fetch";
-import Apollo from "@apollo/client";
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { renderPage } from "vite-plugin-ssr";
-import { createProxyMiddleware } from "http-proxy-middleware";
+import * as dotenv from 'dotenv'
+import express from 'express'
+import compression from 'compression'
+import fetch from 'node-fetch'
+import Apollo from '@apollo/client'
+import { dirname } from 'path'
+import { fileURLToPath } from 'url'
+import { renderPage } from 'vite-plugin-ssr'
+import { createProxyMiddleware } from 'http-proxy-middleware'
 
-const { ApolloClient, InMemoryCache, createHttpLink } = Apollo;
-const __dirname: string = dirname(fileURLToPath(import.meta.url));
-const root: string = `${__dirname}/..`;
-const nodeFetch: any = fetch;
-const isProduction: boolean = process.env.NODE_ENV === "production";
+const { ApolloClient, InMemoryCache, createHttpLink } = Apollo
+const __dirname: string = dirname(fileURLToPath(import.meta.url))
+const root: string = `${__dirname}/..`
+const nodeFetch: any = fetch
+const isProduction: boolean = process.env.NODE_ENV === 'production'
 
-dotenv.config();
+dotenv.config()
 
 const createApolloClient = () => {
   const apolloClient = new ApolloClient({
     ssrMode: true,
     link: createHttpLink({
       uri: `${process.env.REACT_APP_HOST_URL}api/graphql`,
-      fetch: nodeFetch,
+      fetch: nodeFetch
     }),
-    cache: new InMemoryCache(),
-  });
-  return apolloClient;
-};
+    cache: new InMemoryCache()
+  })
+  return apolloClient
+}
 
 const startServer = async () => {
-  const app = express();
+  const app = express()
 
-  app.use(compression());
+  app.use(compression())
 
   app.use(
-    "/api/graphql",
+    '/api/graphql',
     createProxyMiddleware({
       changeOrigin: true,
       pathRewrite: {
-        "^/api/graphql": "/graphql",
+        '^/api/graphql': '/graphql'
       },
       router: async () => {
-        return process.env.REACT_APP_API_URL;
-      },
+        return process.env.REACT_APP_API_URL
+      }
     })
-  );
+  )
 
   if (isProduction) {
-    app.use(express.static(`${root}/dist/client`));
+    app.use(express.static(`${root}/dist/client`))
   } else {
-    const vite = await import("vite");
+    const vite = await import('vite')
     const viteDevMiddleware = (
       await vite.createServer({
         root,
-        server: { middlewareMode: true },
+        server: { middlewareMode: true }
       })
-    ).middlewares;
-    app.use(viteDevMiddleware);
+    ).middlewares
+    app.use(viteDevMiddleware)
   }
 
-  app.get("*", async (req, res, next) => {
+  app.get('*', async (req, res, next) => {
     // It's important to create an entirely new instance of Apollo Client for each request.
     // Otherwise, our response to a request might include sensitive cached query results
     // from a previous request. Source: https://www.apollographql.com/docs/react/performance/server-side-rendering/#example
-    const apolloClient = createApolloClient();
+    const apolloClient = createApolloClient()
 
     const pageContextInit = {
       urlOriginal: req.originalUrl,
-      apolloClient,
-    };
-    const pageContext = await renderPage(pageContextInit);
+      apolloClient
+    }
+    const pageContext = await renderPage(pageContextInit)
 
-    const { httpResponse } = pageContext;
-    if (!httpResponse) return next();
-    const { body, statusCode, contentType, earlyHints } = httpResponse;
+    const { httpResponse } = pageContext
+    if (!httpResponse) return next()
+    const { body, statusCode, contentType, earlyHints } = httpResponse
     if (res.writeEarlyHints)
-      res.writeEarlyHints({ link: earlyHints.map((e) => e.earlyHintLink) });
-    res.status(statusCode).type(contentType).send(body);
-  });
+      res.writeEarlyHints({ link: earlyHints.map((e) => e.earlyHintLink) })
+    res.status(statusCode).type(contentType).send(body)
+  })
 
-  const port = process.env.PORT || 3000;
-  app.listen(port);
-  if (!isProduction) console.log(`Server running at http://localhost:${port}`);
-};
+  const port = process.env.PORT || 3000
+  app.listen(port)
+  if (!isProduction) console.info(`Server running at http://localhost:${port}`)
+}
 
-startServer();
+startServer()

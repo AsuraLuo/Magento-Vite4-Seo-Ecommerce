@@ -1,1 +1,1 @@
-export { default } from "./pageShell";
+export { default } from './pageShell'

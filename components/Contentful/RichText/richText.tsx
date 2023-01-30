@@ -1,9 +1,9 @@
-import { documentToHtmlString } from "@contentful/rich-text-html-renderer";
+import { documentToHtmlString } from '@contentful/rich-text-html-renderer'
 
-import { useApp } from "@hooks/App";
+import { useApp } from '@hooks/App'
 
 const App = () => {
-  const { content } = useApp();
+  const { content } = useApp()
 
   return (
     <div className="App">
@@ -11,7 +11,7 @@ const App = () => {
         dangerouslySetInnerHTML={{ __html: documentToHtmlString(content) }}
       />
     </div>
-  );
-};
+  )
+}
 
-export default App;
+export default App

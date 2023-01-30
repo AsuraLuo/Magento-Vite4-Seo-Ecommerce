@@ -1,11 +1,11 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
+import { createAsyncThunk } from '@reduxjs/toolkit'
 
 export const fetchStoreConfig = createAsyncThunk(
-  "app/fetchStoreConfig",
+  'app/fetchStoreConfig',
   async ({ apolloClient, query }: any) => {
     const { data } = await apolloClient.query({
-      query,
-    });
-    return data;
+      query
+    })
+    return data
   }
-);
+)

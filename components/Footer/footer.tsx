@@ -1,13 +1,14 @@
-import { useFooter } from "@hooks/Footer";
+import { useFooter } from '@hooks/Footer'
 
 const Footer = () => {
-  const { blocks } = useFooter();
+  const { blocks } = useFooter()
 
   return (
     <footer>
       <p>Footer</p>
+      {JSON.stringify(blocks)}
     </footer>
-  );
-};
+  )
+}
 
-export default Footer;
+export default Footer

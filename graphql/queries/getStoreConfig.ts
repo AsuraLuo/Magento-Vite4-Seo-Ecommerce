@@ -1,4 +1,4 @@
-import { gql, DocumentNode } from "@apollo/client";
+import { gql, DocumentNode } from '@apollo/client'
 
 export const GET_STORE_CONFIG: DocumentNode = gql`
   query getStoreConfig {
@@ -31,4 +31,4 @@ export const GET_STORE_CONFIG: DocumentNode = gql`
       symbol: base_currency_symbol
     }
   }
-`;
+`

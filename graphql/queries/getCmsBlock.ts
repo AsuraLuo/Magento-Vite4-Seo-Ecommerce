@@ -1,4 +1,4 @@
-import { gql, DocumentNode } from "@apollo/client";
+import { gql, DocumentNode } from '@apollo/client'
 
 export const GET_CMS_BLOCK: DocumentNode = gql`
   query getCmsBlock($identifiers: [String]!) {
@@ -10,4 +10,4 @@ export const GET_CMS_BLOCK: DocumentNode = gql`
       }
     }
   }
-`;
+`

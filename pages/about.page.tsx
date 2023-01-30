@@ -6,7 +6,7 @@ function Page() {
         Demo using <code>vite-plugin-ssr</code>.
       </p>
     </>
-  );
+  )
 }
 
-export { Page };
+export { Page }

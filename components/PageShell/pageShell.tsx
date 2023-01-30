@@ -1,20 +1,19 @@
-import { ReactNode, StrictMode } from "react";
-import { ApolloProvider } from "@apollo/client";
+import { ReactNode, StrictMode } from 'react'
+import { ApolloProvider } from '@apollo/client'
 
-import { PageContextProvider } from "../../renderer/usePageContext";
-import { PageContext } from "../../types/pageType";
-
-import Footer from "@components/Footer";
-import Link from "@components/Link";
+import Footer from '@components/Footer'
+import Link from '@components/Link'
+import { PageContextProvider } from '../../renderer/usePageContext'
+import { PageContext } from '../../types/pageType'
 
 const PageShell = ({
   children,
   apolloClient,
-  pageContext,
+  pageContext
 }: {
-  children: ReactNode;
-  apolloClient: any;
-  pageContext: PageContext;
+  children: ReactNode
+  apolloClient: any
+  pageContext: PageContext
 }) => {
   return (
     <StrictMode>
@@ -32,7 +31,7 @@ const PageShell = ({
         </PageContextProvider>
       </ApolloProvider>
     </StrictMode>
-  );
-};
+  )
+}
 
-export default PageShell;
+export default PageShell

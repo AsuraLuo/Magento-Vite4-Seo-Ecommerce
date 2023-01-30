@@ -52,6 +52,7 @@ module.exports = {
         extensions: ['.ts', '.tsx']
       }
     ],
+    'react-hooks/exhaustive-deps': 'warn',
     '@typescript-eslint/ban-types': 0,
     '@typescript-eslint/return-await': 0,
     '@typescript-eslint/no-explicit-any': 0,
@@ -61,4 +62,3 @@ module.exports = {
     '@typescript-eslint/no-inferrable-types': 0
   }
 }
-

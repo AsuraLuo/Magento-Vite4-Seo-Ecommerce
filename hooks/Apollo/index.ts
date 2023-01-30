@@ -1,1 +1,1 @@
-export { useAwaitQuery } from "./useAwaitQuery";
+export { useAwaitQuery } from './useAwaitQuery'

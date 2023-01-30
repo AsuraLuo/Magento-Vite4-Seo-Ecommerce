@@ -1,1 +1,1 @@
-export { useFooter } from "./useFooter";
+export { useFooter } from './useFooter'
